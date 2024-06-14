@@ -1,6 +1,23 @@
-import { Button, Flex, Heading, Spacer } from "@chakra-ui/react";
-import { FC } from "react";
+import {
+  Button,
+  Flex,
+  Heading,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Spacer,
+} from "@chakra-ui/react";
+import { Dispatch, FC, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMetamask } from "../lib";
+import { JsonRpcSigner } from "ethers";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+
+interface HeaderProps {
+  signer: JsonRpcSigner | null;
+  setSigner: Dispatch<SetStateAction<JsonRpcSigner | null>>;
+}
 
 const navLinks = [
   {
@@ -21,8 +38,12 @@ const navLinks = [
   },
 ];
 
-const Header: FC = () => {
+const Header: FC<HeaderProps> = ({ signer, setSigner }) => {
   const navigate = useNavigate();
+
+  const onClickLogOut = () => {
+    setSigner(null);
+  };
 
   return (
     <Heading>
@@ -36,14 +57,52 @@ const Header: FC = () => {
         <Flex pr={10}>gyuseon</Flex>
         <Flex display={["none", "none", "flex"]} gap={4}>
           {navLinks.map((v, i) => (
-            <Button key={i} onClick={() => navigate(v.path)}>
+            <Button key={i} variant={"link"} onClick={() => navigate(v.path)}>
               {v.name}
             </Button>
           ))}
         </Flex>
         <Spacer />
-        <Flex>
-          <Button>로그인</Button>
+        <Flex display={["none", "none", "flex"]} w={40} justifyContent="end">
+          {signer ? (
+            <Menu>
+              <MenuButton
+                colorScheme="blue"
+                as={Button}
+                rightIcon={<ChevronDownIcon />}
+              >
+                {signer.address.substring(0, 7)}...
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={onClickLogOut}>로그아웃</MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            <Button colorScheme="blue" onClick={() => useMetamask(setSigner)}>
+              🦊 로그인
+            </Button>
+          )}
+        </Flex>
+
+        <Flex display={["flex", "flex", "none"]}>
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              {signer ? `${signer.address.substring(0, 7)}...` : "메뉴"}
+            </MenuButton>
+            <MenuList>
+              {!signer && (
+                <MenuItem onClick={() => useMetamask(setSigner)}>
+                  로그인
+                </MenuItem>
+              )}
+              {navLinks.map((v, i) => (
+                <MenuItem key={i} onClick={() => navigate(v.path)}>
+                  {v.name}
+                </MenuItem>
+              ))}
+              {signer && <MenuItem onClick={onClickLogOut}>로그아웃</MenuItem>}
+            </MenuList>
+          </Menu>
         </Flex>
       </Flex>
     </Heading>
