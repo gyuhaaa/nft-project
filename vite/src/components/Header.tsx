@@ -43,6 +43,7 @@ const Header: FC<HeaderProps> = ({ signer, setSigner }) => {
 
   const onClickLogOut = () => {
     setSigner(null);
+    localStorage.setItem("isLogin", "false");
   };
 
   return (
