@@ -12,20 +12,27 @@ import {
   ModalCloseButton,
   Textarea,
   Center,
+  Image,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { JsonRpcSigner } from "ethers";
 import { ChangeEvent, FC, useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import { OutletContext } from "../components/Layout";
+import imgData from "../../public/json/imgData.json";
 
 const Home: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
+
+  const { signer, setSigner, mintContract } = useOutletContext<OutletContext>();
+
   const [questionImage, setQuestionImage] = useState<string | undefined>(
     undefined
   );
   const [answerImage, setAnswerImage] = useState<string | undefined>(undefined);
   const [answer, setAnswer] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
+
+  useEffect(() => console.log(mintContract), [mintContract]);
 
   const uploadImage = async (formData: FormData) => {
     try {
@@ -57,7 +64,6 @@ const Home: FC = () => {
 
       const imageUrl = await uploadImage(formData);
 
-      // localStorage.setItem("questionImage", JSON.stringify(imageUrl));
       setQuestionImage(imageUrl);
 
       console.log(imageUrl);
@@ -76,7 +82,6 @@ const Home: FC = () => {
 
       const imageUrl = await uploadImage(formData);
 
-      // localStorage.setItem("answerImage", JSON.stringify(imageUrl));
       setAnswerImage(imageUrl);
 
       console.log(imageUrl);
@@ -85,59 +90,57 @@ const Home: FC = () => {
     }
   };
 
-  const uploadMetadata = async () =>
-    // answer: string,
-    // questionImage: string,
-    // answerImage: string
-    {
-      console.log(questionImage);
-      console.log(answer);
+  const uploadMetadata = async () => {
+    if (!questionImage || !answer) return;
 
-      if (!questionImage || !answer) return;
+    console.log(answerImage);
+    if (!answerImage) {
+      setAnswerImage(questionImage);
+    }
 
-      try {
-        const metadata = JSON.stringify({
-          pinataContent: {
-            id: "1",
-            answer,
-            description,
-            questionImage,
-            answerImage,
-            // name: "test",
-            // description: "test",
-            // image,
+    try {
+      const metadata = JSON.stringify({
+        pinataContent: {
+          answer,
+          description,
+          questionImage,
+          answerImage,
+        },
+        pinataMetadata: {
+          name: "test_24061904.json",
+        },
+      });
+
+      const response = await axios.post(
+        "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        metadata,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            pinata_api_key: import.meta.env.VITE_PINATA_KEY,
+            pinata_secret_api_key: import.meta.env.VITE_PINATA_SECRET,
           },
-          pinataMetadata: {
-            // DB "img" + (count(*) + 1) + ".json"
-            name: "test_24061701.json",
-          },
-        });
+        }
+      );
 
-        const response = await axios.post(
-          "https://api.pinata.cloud/pinning/pinJSONToIPFS",
-          metadata,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              pinata_api_key: import.meta.env.VITE_PINATA_KEY,
-              pinata_secret_api_key: import.meta.env.VITE_PINATA_SECRET,
-            },
-          }
-        );
-
-        return `https://jade-junior-ape-105.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      return `https://jade-junior-ape-105.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Flex flexDir={"column"} w={"100%"}>
-      <Flex bgColor={"red.100"} h={"100"}>
-        Homepage description
+      <Flex justifyContent={"center"}>
+        <Image src="../../public/images/main.png" />
+        {/* <Center w={"100%"} fontSize={30} fontWeight={"bold"}>
+          미적 감각이 0에 수렴하는 사람이 홈페이지를 만들면
+        </Center> */}
       </Flex>
-      <Flex bgColor={"red.100"} h={"100"} my={3}>
-        현재 등록된 문제 수
+      <Flex bgColor={"gray.100"} h={"100"} my={3}>
+        <Center w={"100%"} fontWeight={"bold"}>
+          현재 등록된 문제 수 : {imgData.length}
+        </Center>
       </Flex>
       <Flex h={300} flexDir={"column"}>
         <Button onClick={onOpen} colorScheme="blue" opacity={0.6}>
@@ -152,11 +155,11 @@ const Home: FC = () => {
               <Flex justifyContent={"center"} gap={2}>
                 <input
                   style={{ display: "none" }}
-                  id="file"
+                  id="questionFile"
                   type="file"
                   onChange={onChangeQuestionImg}
                 />
-                <label htmlFor="file">
+                <label htmlFor="questionFile">
                   <Center
                     w={"100px"}
                     h={"100px"}
@@ -170,11 +173,11 @@ const Home: FC = () => {
                 </label>
                 <input
                   style={{ display: "none" }}
-                  id="file"
+                  id="answerFile"
                   type="file"
                   onChange={onChangeAnswerImg}
                 />
-                <label htmlFor="file">
+                <label htmlFor="answerFile">
                   <Center
                     w={"100px"}
                     h={"100px"}
