@@ -2,6 +2,7 @@ import {
   Button,
   Flex,
   Heading,
+  Image,
   Menu,
   MenuButton,
   MenuItem,
@@ -55,7 +56,9 @@ const Header: FC<HeaderProps> = ({ signer, setSigner }) => {
         justifyContent={"center"}
         mb={10}
       >
-        <Flex pr={10}>gyuseon</Flex>
+        <Flex pr={10}>
+          <Image src="../public/images/logo_border_2.png" w={100} />
+        </Flex>
         <Flex display={["none", "none", "flex"]} gap={4}>
           {navLinks.map((v, i) => (
             <Button key={i} variant={"link"} onClick={() => navigate(v.path)}>
@@ -68,14 +71,16 @@ const Header: FC<HeaderProps> = ({ signer, setSigner }) => {
           {signer ? (
             <Menu>
               <MenuButton
-                colorScheme="blue"
+                colorScheme="gray"
                 as={Button}
                 rightIcon={<ChevronDownIcon />}
               >
                 {signer.address.substring(0, 7)}...
               </MenuButton>
               <MenuList>
-                <MenuItem onClick={onClickLogOut}>로그아웃</MenuItem>
+                <MenuItem onClick={onClickLogOut} fontSize={20}>
+                  Logout
+                </MenuItem>
               </MenuList>
             </Menu>
           ) : (
@@ -97,11 +102,19 @@ const Header: FC<HeaderProps> = ({ signer, setSigner }) => {
                 </MenuItem>
               )}
               {navLinks.map((v, i) => (
-                <MenuItem key={i} onClick={() => navigate(v.path)}>
+                <MenuItem
+                  key={i}
+                  onClick={() => navigate(v.path)}
+                  fontSize={20}
+                >
                   {v.name}
                 </MenuItem>
               ))}
-              {signer && <MenuItem onClick={onClickLogOut}>로그아웃</MenuItem>}
+              {signer && (
+                <MenuItem onClick={onClickLogOut} fontSize={20}>
+                  Logout
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         </Flex>
