@@ -2,6 +2,8 @@ res
 .env
 .deps
 artifacts
+vite/public/images/quiz
+vite/public/json
 
 # Logs
 logs
