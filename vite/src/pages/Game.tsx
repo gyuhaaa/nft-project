@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Image, Input, Text } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
-import quizData from "../../public/json/imgData.json";
+import quizData from "../json/imgData.json";
 import { Timer } from "../components/Timer";
 
 const Game: FC = () => {

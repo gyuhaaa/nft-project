@@ -18,7 +18,7 @@ import axios from "axios";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { OutletContext } from "../components/Layout";
-import quizData from "../../public/json/imgData.json";
+import quizData from "../json/imgData.json";
 
 const Home: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

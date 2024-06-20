@@ -14,7 +14,7 @@ import { useOutletContext } from "react-router-dom";
 import { OutletContext } from "../components/Layout";
 import PuzzleCard from "../components/PuzzleCard";
 import axios from "axios";
-import quizData from "../../public/json/imgData.json";
+import quizData from "../json/imgData.json";
 
 const My: FC = () => {
   const [amount, setAmount] = useState<number>(0);
