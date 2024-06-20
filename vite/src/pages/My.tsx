@@ -23,9 +23,13 @@ const My: FC = () => {
   const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [isHave1, setIsHave1] = useState<boolean>(false);
+  const [isHave7, setIsHave7] = useState<boolean>(false);
+
+  const [isSuccess7, setIsSuccess7] = useState<boolean>(false);
+
   const { signer, setSigner, mintContract } = useOutletContext<OutletContext>();
 
-  // setAmount(1);
   const getCheckNfts = async () => {
     try {
       if (!signer || !mintContract) return;
@@ -72,13 +76,18 @@ const My: FC = () => {
   useEffect(() => {
     getCheckNfts();
     setAmount(1);
-
-    console.log(amount);
-    console.log(mintContract);
   }, [signer, mintContract]);
 
   useEffect(() => {
     if (mintedList.length === 0) return;
+    // console.log(mintedList);
+
+    if (mintedList[0] > 0) {
+      setIsHave1(true);
+    }
+    if (mintedList[6] > 0) {
+      setIsHave7(true);
+    }
 
     const temp = mintedList.filter((v) => {
       if (v) {
@@ -88,6 +97,14 @@ const My: FC = () => {
 
     setProgress((temp.length / mintedList.length) * 100);
   }, [mintedList]);
+
+  useEffect(() => {
+    const temp = localStorage.getItem("successNumber");
+
+    if (Number(temp) > 0) {
+      setIsSuccess7(true);
+    }
+  }, []);
 
   return (
     <Flex flexDir={"column"}>
@@ -101,15 +118,23 @@ const My: FC = () => {
             <Text>Upload Rank</Text>
           </Flex> */}
           <Flex flexDir="column" w="100%" my={[10, 10, 20]}>
-            <Text mb={5} fontSize={22} fontWeight={"bold"}>
-              내가 올린 문제
+            <Text
+              mb={16}
+              fontSize={36}
+              fontWeight={"bold"}
+              bgColor={"gray.100"}
+              textAlign={"center"}
+              h={30}
+            >
+              My Quiz
             </Text>
             <Grid
               templateColumns={{
                 sm: "repeat(3, 1fr)",
                 md: "repeat(3, 1fr)",
-                lg: "repeat(5, 1fr)",
-                // xl: "repeat(5, 1fr)",
+                lg: "repeat(4, 1fr)",
+                xl: "repeat(5, 1fr)",
+                "2xl": "repeat(6, 1fr)",
               }}
               justifyItems="center"
               gap={8}
@@ -117,6 +142,7 @@ const My: FC = () => {
               {quizData.map((v: IMyQuizData, i) => (
                 <MyQuizCard
                   key={i}
+                  owner={v.owner}
                   answer={v.answer}
                   description={v.description}
                   questionImage={v.questionImage}
@@ -125,8 +151,15 @@ const My: FC = () => {
             </Grid>
           </Flex>
           <Flex flexDir="column" w="100%" my={[10, 10, 20]}>
-            <Text mb={5} fontSize={22} fontWeight={"bold"}>
-              내 NFT
+            <Text
+              mb={16}
+              fontSize={36}
+              fontWeight={"bold"}
+              bgColor={"gray.100"}
+              textAlign={"center"}
+              h={30}
+            >
+              My NFT
             </Text>
             <Flex
               flexDir="column"
@@ -174,64 +207,68 @@ const My: FC = () => {
                       flexDir={"column"}
                       alignItems="end"
                       gap={3}
-                      mx={4}
+                      mx={[4, 4, 4, 10, 16]}
                       mb={16}
-                      w={330}
+                      w={[330, 250, 330, 400]}
                     >
-                      <Flex
-                        flexDir="column"
-                        gap={[2, 2, 4]}
-                        px={5}
-                        py={2}
-                        bgColor={"gray.200"}
-                        rounded={"lg"}
-                        alignItems={"center"}
-                        w={"100%"}
-                      >
-                        <Text fontSize={[14, 14, 18]} fontWeight="semibold">
-                          내 게임에 찾아와준 거야? 기특해,
-                        </Text>
-                        <Button
-                          colorScheme="blue"
-                          opacity={0.7}
-                          size={["sm", "sm", "md"]}
-                          onClick={() => onClickMintNft(1)}
-                          isDisabled={isLoading}
-                          isLoading={isLoading}
-                          loadingText="Loading..."
-                          w={"fit-content"}
-                          fontSize={["sm", "sm", "md"]}
+                      {!isHave1 && (
+                        <Flex
+                          flexDir="column"
+                          gap={[2, 2, 4]}
+                          px={5}
+                          py={2}
+                          bgColor={"gray.200"}
+                          rounded={"lg"}
+                          alignItems={"center"}
+                          w={"100%"}
                         >
-                          1번 퍼즐 받기
-                        </Button>
-                      </Flex>
-                      <Flex
-                        flexDir="column"
-                        gap={[2, 2, 4]}
-                        px={5}
-                        py={2}
-                        bgColor={"gray.200"}
-                        rounded={"lg"}
-                        alignItems={"center"}
-                        w={"100%"}
-                      >
-                        <Text fontSize={[14, 14, 18]} fontWeight="semibold">
-                          첫 정답이잖아 ~ 럭키비키 NFT 줄게 ~
-                        </Text>
-                        <Button
-                          colorScheme="blue"
-                          opacity={0.7}
-                          size={["sm", "sm", "md"]}
-                          onClick={() => onClickMintNft(7)}
-                          isDisabled={isLoading}
-                          isLoading={isLoading}
-                          loadingText="Loading..."
-                          w={"fit-content"}
-                          fontSize={["sm", "sm", "md"]}
+                          <Text fontSize={[14, 14, 18]} fontWeight="semibold">
+                            내 게임에 찾아와준 거야? 기특해,
+                          </Text>
+                          <Button
+                            colorScheme="blue"
+                            opacity={0.7}
+                            size={["sm", "sm", "md"]}
+                            onClick={() => onClickMintNft(1)}
+                            isDisabled={isLoading}
+                            isLoading={isLoading}
+                            loadingText="Loading..."
+                            w={"fit-content"}
+                            fontSize={["sm", "sm", "md"]}
+                          >
+                            1번 퍼즐 받기
+                          </Button>
+                        </Flex>
+                      )}
+                      {!isHave7 && isSuccess7 && (
+                        <Flex
+                          flexDir="column"
+                          gap={[2, 2, 4]}
+                          px={5}
+                          py={2}
+                          bgColor={"gray.200"}
+                          rounded={"lg"}
+                          alignItems={"center"}
+                          w={"100%"}
                         >
-                          7번 퍼즐 받기
-                        </Button>
-                      </Flex>
+                          <Text fontSize={[14, 14, 18]} fontWeight="semibold">
+                            첫 정답이잖아 ~ 럭키비키 NFT 줄게 ~
+                          </Text>
+                          <Button
+                            colorScheme="blue"
+                            opacity={0.7}
+                            size={["sm", "sm", "md"]}
+                            onClick={() => onClickMintNft(7)}
+                            isDisabled={isLoading}
+                            isLoading={isLoading}
+                            loadingText="Loading..."
+                            w={"fit-content"}
+                            fontSize={["sm", "sm", "md"]}
+                          >
+                            7번 퍼즐 받기
+                          </Button>
+                        </Flex>
+                      )}
                     </Flex>
                   </Flex>
                 </Flex>

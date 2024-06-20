@@ -39,6 +39,12 @@ const Game: FC = () => {
     }
   };
 
+  const goToFirst = () => {
+    localStorage.setItem("successNumber", String(successNumber));
+    localStorage.setItem("failNumber", String(failNumber));
+    window.location.reload();
+  };
+
   useEffect(() => {
     console.log("quiz : " + quizNumber);
   }, [quizNumber]);
@@ -83,7 +89,8 @@ const Game: FC = () => {
         {timer && <Timer setTimer={setTimer} />}
         {!timer && !showStartButton && (
           <Flex
-            bgColor={"blue.100"}
+            // bgColor={"blue.100"}
+            border={"1px solid gray"}
             w={"100%"}
             h={"100%"}
             justifyContent={"center"}
@@ -144,15 +151,7 @@ const Game: FC = () => {
           {isSubmit && !isEnd && (
             <Button onClick={onClickNext}>다음 문제</Button>
           )}
-          {isEnd && (
-            <Button
-              onClick={() => {
-                window.location.reload();
-              }}
-            >
-              처음으로
-            </Button>
-          )}
+          {isEnd && <Button onClick={goToFirst}>처음으로</Button>}
         </Flex>
       )}
     </Flex>

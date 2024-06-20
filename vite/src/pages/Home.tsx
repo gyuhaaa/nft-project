@@ -18,7 +18,7 @@ import axios from "axios";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { OutletContext } from "../components/Layout";
-import imgData from "../../public/json/imgData.json";
+import quizData from "../../public/json/imgData.json";
 
 const Home: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -145,7 +145,7 @@ const Home: FC = () => {
       </Flex>
       <Flex bgColor={"gray.100"} h={"100"} my={3}>
         <Center w={"100%"} fontWeight={"bold"} fontSize={20}>
-          현재 등록된 문제 수 : {imgData.length}
+          현재 등록된 문제 수 : {quizData.length}
         </Center>
       </Flex>
       <Flex h={100} flexDir={"column"} alignItems={"center"}>

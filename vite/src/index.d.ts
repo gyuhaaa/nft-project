@@ -15,6 +15,7 @@ interface StsNftMetadata extends NftMetadata {
 
 interface IMyQuizData {
   // id: number;
+  owner: string;
   answer: string;
   description: string;
   questionImage: string;
