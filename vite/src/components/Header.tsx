@@ -29,10 +29,10 @@ const navLinks = [
     name: "Game",
     path: "/game",
   },
-  {
-    name: "Rank",
-    path: "/rank",
-  },
+  // {
+  //   name: "Rank",
+  //   path: "/rank",
+  // },
   {
     name: "My",
     path: "/my",

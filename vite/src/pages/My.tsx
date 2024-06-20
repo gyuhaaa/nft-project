@@ -93,13 +93,13 @@ const My: FC = () => {
     <Flex flexDir={"column"}>
       {signer ? (
         <>
-          <Flex flexDir={"column"}>
+          {/* <Flex flexDir={"column"}>
             <Text mb={5} fontSize={22} fontWeight={"bold"}>
               My Rank
             </Text>
             <Text>Game Rank</Text>
             <Text>Upload Rank</Text>
-          </Flex>
+          </Flex> */}
           <Flex flexDir="column" w="100%" my={[10, 10, 20]}>
             <Text mb={5} fontSize={22} fontWeight={"bold"}>
               내가 올린 문제
