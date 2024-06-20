@@ -31,6 +31,7 @@ const Home: FC = () => {
   const [answerImage, setAnswerImage] = useState<string | undefined>(undefined);
   const [answer, setAnswer] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
+  const [isUploadLoading, setIsUploadLoading] = useState<boolean>(false);
 
   useEffect(() => console.log(mintContract), [mintContract]);
 
@@ -93,10 +94,11 @@ const Home: FC = () => {
   const uploadMetadata = async () => {
     if (!questionImage || !answer) return;
 
-    console.log(answerImage);
     if (!answerImage) {
       setAnswerImage(questionImage);
     }
+
+    setIsUploadLoading(true);
 
     try {
       const metadata = JSON.stringify({
@@ -123,9 +125,13 @@ const Home: FC = () => {
         }
       );
 
+      setIsUploadLoading(false);
+      onClose();
       return `https://jade-junior-ape-105.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
     } catch (error) {
       console.error(error);
+
+      setIsUploadLoading(false);
     }
   };
 
@@ -138,12 +144,21 @@ const Home: FC = () => {
         </Center> */}
       </Flex>
       <Flex bgColor={"gray.100"} h={"100"} my={3}>
-        <Center w={"100%"} fontWeight={"bold"}>
+        <Center w={"100%"} fontWeight={"bold"} fontSize={20}>
           현재 등록된 문제 수 : {imgData.length}
         </Center>
       </Flex>
-      <Flex h={300} flexDir={"column"}>
-        <Button onClick={onOpen} colorScheme="blue" opacity={0.6}>
+      <Flex h={100} flexDir={"column"} alignItems={"center"}>
+        <Button
+          onClick={onOpen}
+          bgColor={"black"}
+          color={"white"}
+          opacity={0.6}
+          w={"fit-content"}
+          h={"100%"}
+          minW={500}
+          fontSize={40}
+        >
           문제 등록하기
         </Button>
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -163,12 +178,15 @@ const Home: FC = () => {
                   <Center
                     w={"100px"}
                     h={"100px"}
-                    bgColor={"blue.100"}
+                    bgColor={"gray.800"}
+                    color={"white"}
                     rounded={"lg"}
                     border={"gray solid 1px"}
                     cursor={"pointer"}
                   >
-                    문제 이미지
+                    문제
+                    <br />
+                    이미지
                   </Center>
                 </label>
                 <input
@@ -186,7 +204,9 @@ const Home: FC = () => {
                     border={"gray solid 1px"}
                     cursor={"pointer"}
                   >
-                    정답 이미지
+                    정답
+                    <br />
+                    이미지
                   </Center>
                 </label>
               </Flex>
@@ -206,10 +226,15 @@ const Home: FC = () => {
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
+              <Button colorScheme="gray" mr={3} onClick={onClose}>
                 Close
               </Button>
-              <Button variant="ghost" onClick={uploadMetadata}>
+              <Button
+                variant="ghost"
+                onClick={uploadMetadata}
+                isDisabled={isUploadLoading}
+                isLoading={isUploadLoading}
+              >
                 Upload
               </Button>
             </ModalFooter>
