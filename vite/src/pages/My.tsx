@@ -106,6 +106,10 @@ const My: FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(stsNftMetadata);
+  }, [stsNftMetadata]);
+
   return (
     <Flex flexDir={"column"}>
       {signer ? (
