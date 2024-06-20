@@ -23,7 +23,7 @@ import quizData from "../../public/json/imgData.json";
 const Home: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { signer, setSigner, mintContract } = useOutletContext<OutletContext>();
+  const { mintContract } = useOutletContext<OutletContext>();
 
   const [questionImage, setQuestionImage] = useState<string | undefined>(
     undefined
